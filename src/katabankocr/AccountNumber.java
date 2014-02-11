@@ -8,6 +8,7 @@ public class AccountNumber {
 	
 	private boolean allDigitsLegible;
 	private boolean validChecksum;
+	private String strRep;
 
 	public AccountNumber(List<AccountNumberDigit> digits) {
 		
@@ -27,6 +28,19 @@ public class AccountNumber {
 		try {
 			validChecksum = calcChecksum(digits) == 0;
 		} catch (ChecksumException e) {}
+		
+		// create the string representation
+		StringBuilder sb = new StringBuilder();
+		for (AccountNumberDigit digit : digits) {
+			sb.append(digit.toString());
+		}
+		
+		if (!allDigitsLegible) {
+			sb.append(" ILL");
+		} else if (!validChecksum) {
+			sb.append(" ERR");
+		}
+		strRep = sb.toString();
 	}
 	
 	public boolean allDigitsLegible() {
@@ -51,5 +65,10 @@ public class AccountNumber {
 			num--;
 		}
 		return checksum % 11;
+	}
+
+	@Override
+	public String toString() {
+		return strRep;
 	}
 }

@@ -42,7 +42,7 @@ public class AccountNumberTest {
 	}
 
 	@Test
-	public void testCalcChecksum() {
+	public void testCalcChecksum1() {
 		List<AccountNumberDigit> digits = new ArrayList<>();
 		for (int i = 1; i < 10; i++) {
 			digits.add(new AccountNumberDigit(i));
@@ -58,4 +58,22 @@ public class AccountNumberTest {
 		assertEquals(0, checksum);
 	}
 
+	@Test
+	public void testCalcChecksum2() {
+		List<AccountNumberDigit> digits = new ArrayList<>();
+		AccountNumberDigit five = new AccountNumberDigit(5);
+		for (int i = 1; i < 10; i++) {
+			digits.add(five);
+		}
+		
+		int checksum = -1;
+		try {
+			checksum = AccountNumber.calcChecksum(digits);
+			System.out.println("Checksum val: " + checksum);
+		} catch (ChecksumException e) {
+			fail();
+		}
+		
+		assertEquals(5, checksum);
+	}
 }
