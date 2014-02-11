@@ -1,11 +1,12 @@
 package katabankocr;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 public class App {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		if (args.length != 1) {
 			System.err.println("You must supply a path to a file to parse.");
@@ -24,10 +25,14 @@ public class App {
 			return;
 		}
 		
-		// print the account numbers to the screen for now
+		// print the account numbers to an output file
+		String outFile = filePath + ".out";
+		//BufferedWriter out = new BufferedWriter(new FileWriter(outFile));
+		PrintWriter out = new PrintWriter(outFile);
 		for (AccountNumber accountNumber : accountNumbers) {
-			System.out.println(accountNumber);
+			out.println(accountNumber.toString());
 		}
+		out.close();
 	}
 
 }
