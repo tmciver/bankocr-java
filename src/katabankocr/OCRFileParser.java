@@ -11,39 +11,40 @@ import java.util.Map;
 public class OCRFileParser {
 	
 	private static final int DIGITS_PER_ACCOUNT_NUMBER = 9;
+	private static final int COLUMNS_PER_ACCOUNT_NUMBER = 27;
 	private static final int DIGIT_WIDTH_IN_CHARS = 3;
 	
-	private static final Map<String, Integer> digitMap = new HashMap<String, Integer>() {{
+	private static final Map<String, AccountNumberDigit> digitMap = new HashMap<String, AccountNumberDigit>() {{
 		put(" _ " +
 			"| |" +
-			"|_|",   0);
+			"|_|",   new AccountNumberDigit(0));
 		put("   " +
 			"  |" +
-			"  |",   1);
+			"  |",   new AccountNumberDigit(1));
 		put(" _ " +
 			" _|" +
-			"|_ ",   2);
+			"|_ ",   new AccountNumberDigit(2));
 		put(" _ " +
 			" _|" +
-			" _|",   3);
+			" _|",   new AccountNumberDigit(3));
 		put("   " +
 			"|_|" +
-			"  |",   4);
+			"  |",   new AccountNumberDigit(4));
 		put(" _ " +
 			"|_ " +
-			" _|",   5);
+			" _|",   new AccountNumberDigit(5));
 		put(" _ " +
 			"|_ " +
-			"|_|",   6);
+			"|_|",   new AccountNumberDigit(6));
 		put(" _ " +
 			"  |" +
-			"  |",   7);
+			"  |",   new AccountNumberDigit(7));
 		put(" _ " +
 			"|_|" +
-			"|_|",   8);
+			"|_|",   new AccountNumberDigit(8));
 		put(" _ " +
 			"|_|" +
-			" _|",   9);
+			" _|",   new AccountNumberDigit(9));
 	}};
 
 	private OCRFileParser() {}
@@ -53,8 +54,7 @@ public class OCRFileParser {
 	}
 	
 	private static List<AccountNumber> parse(BufferedReader reader) throws IOException {
-		List<AccountNumber> accountNumbers = parseAccountNumbers(reader);
-		return accountNumbers;
+		return parseAccountNumbers(reader);
 	}
 
 	private static List<AccountNumber> parseAccountNumbers(BufferedReader reader) throws IOException {
@@ -77,11 +77,13 @@ public class OCRFileParser {
 	}
 
 	private static AccountNumber parseAccountNumber(BufferedReader reader) throws IOException {
-		// read 4 lines from the reader
+		// read the 3 lines containing the account number
 		String line1 = reader.readLine();
 		String line2 = reader.readLine();
 		String line3 = reader.readLine();
-		String line4 = reader.readLine();
+		
+		// discard the blank line between account numbers
+		reader.readLine();
 		
 		// if any of the first three lines are null, we're at the end of the file
 		if (line1 == null ||
@@ -105,11 +107,10 @@ public class OCRFileParser {
 	private static String[] linesToDigitStrings(String line1, String line2, String line3) {
 		
 		// make sure each line has the correct number of characters
-		int expectedLength = 27;
-		if (line1.length() != expectedLength ||
-			line2.length() != expectedLength ||
-			line3.length() != expectedLength) {
-			throw new IllegalArgumentException("One of the input lines did not have the requisite " + expectedLength + " characters.");
+		if (line1.length() != COLUMNS_PER_ACCOUNT_NUMBER ||
+			line2.length() != COLUMNS_PER_ACCOUNT_NUMBER ||
+			line3.length() != COLUMNS_PER_ACCOUNT_NUMBER) {
+			throw new IllegalArgumentException("One of the input lines did not have the requisite " + COLUMNS_PER_ACCOUNT_NUMBER + " characters.");
 		}
 		
 		String[] line1Segments = segmentLine(line1);
@@ -136,10 +137,10 @@ public class OCRFileParser {
 	}
 	
 	private static AccountNumberDigit digitStringToDigit(String digitString) {
-		Integer val = digitMap.get(digitString);
+		AccountNumberDigit val = digitMap.get(digitString);
 		if (val == null) {
-			val = -1;
+			val = new AccountNumberDigit(-1);
 		}
-		return new AccountNumberDigit(val);
+		return val;
 	}
 }

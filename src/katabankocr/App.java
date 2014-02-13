@@ -1,8 +1,10 @@
 package katabankocr;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.util.List;
+
+import katabankocr.AccountNumber;;
 
 public class App {
 
@@ -27,8 +29,8 @@ public class App {
 		
 		// print the account numbers to an output file
 		String outFile = filePath + ".out";
-		//BufferedWriter out = new BufferedWriter(new FileWriter(outFile));
-		PrintWriter out = new PrintWriter(outFile);
+		//PrintStream out = new PrintStream(outFile);
+		PrintStream out = System.out;
 		for (AccountNumber accountNumber : accountNumbers) {
 			out.println(accountNumber.toString());
 		}
